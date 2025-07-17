@@ -3,6 +3,13 @@
 
 using namespace std;
 
+void SimulateKey(INPUT &input, WORD VK_KEY, bool pressed)
+{
+	input.ki.dwFlags = pressed ? 0 : KEYEVENTF_KEYUP;
+	input.ki.wScan = VK_KEY;
+	SendInput(1, &input, sizeof(INPUT));
+}
+
 int main()
 {
 	cout << "© 2021 Meiware.net" << endl << "simulates key press (no memory modification)" << endl << "hold mouse5 to autostrafe" << endl;
@@ -25,23 +32,13 @@ int main()
 		{
 			if(point.x < (rect.right / 2))
 			{
-				input.ki.dwFlags = KEYEVENTF_KEYUP;
-				input.ki.wScan = VK_D;
-				SendInput(1, &input, sizeof(INPUT));
-
-				input.ki.dwFlags = 0; //0 defines a keydown event
-				input.ki.wScan = VK_A;
-				SendInput(1, &input, sizeof(INPUT));
+				SimulateKey(input, VK_D, false);
+				SimulateKey(input, VK_A, true);
 			}
 			else if(point.x > (rect.right / 2))
 			{
-				input.ki.dwFlags = KEYEVENTF_KEYUP;
-				input.ki.wScan = VK_A;
-				SendInput(1, &input, sizeof(INPUT));
-
-				input.ki.dwFlags = 0;
-				input.ki.wScan = VK_D;
-				SendInput(1, &input, sizeof(INPUT));
+				SimulateKey(input, VK_A, false);
+				SimulateKey(input, VK_D, true);
 			}
 
 			runonce = true;
@@ -49,13 +46,8 @@ int main()
 		else
 			if(runonce) //we release the keys when mouse5 is not held, but only once
 			{
-				input.ki.dwFlags = KEYEVENTF_KEYUP;
-
-				input.ki.wScan = VK_A;
-				SendInput(1, &input, sizeof(INPUT));
-
-				input.ki.wScan = VK_D;
-				SendInput(1, &input, sizeof(INPUT));
+				SimulateKey(input, VK_A, false);
+				SimulateKey(input, VK_D, false);
 
 				runonce = false;
 			}
