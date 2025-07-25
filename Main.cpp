@@ -20,7 +20,7 @@ int main()
 	POINT cursor;
 	INPUT input;
 	input.type = INPUT_KEYBOARD;
-	bool runonce = true;
+	bool lastDir = false, runonce = true; //lastDir false=left, true=right
 
 	cout << "© 2021 Meiware.net\nsimulates key press (no memory modification)\nhold mouse5 to autostrafe" << endl;
 
@@ -31,15 +31,19 @@ int main()
 
 		if(GetAsyncKeyState(VK_XBUTTON2)) //XBUTTON2 is the virtual key code for mouse5
 		{
-			if(cursor.x < screen.right / 2)
+			if(cursor.x < screen.right / 2 || cursor.x <= screen.right / 2 && !lastDir) //we want to ensure A or D is still being pressed when the mouse is not being moved
 			{
 				SimulateKey(input, K_D, VK_D, false);
 				SimulateKey(input, K_A, VK_A, true);
+
+				lastDir = false;
 			}
-			else if(cursor.x > screen.right / 2)
+			else if(cursor.x > screen.right / 2 || cursor.x >= screen.right / 2 && lastDir)
 			{
 				SimulateKey(input, K_A, VK_A, false);
 				SimulateKey(input, K_D, VK_D, true);
+
+				lastDir = true;
 			}
 
 			runonce = true;
@@ -53,7 +57,7 @@ int main()
 				runonce = false;
 			}
 
-		Sleep(1000 / 128); //128 updates/second
+		Sleep(2); //1000ms / 5000updates/s = 2ms
 	}
 
 	return 0;
