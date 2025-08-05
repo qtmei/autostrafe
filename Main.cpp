@@ -57,8 +57,9 @@ int main()
 				runonce = false;
 			}
 
-		Sleep(2); //1000ms / 5000updates/s = 2ms
+		Sleep(2); //1000ms / 500 updates/s = 2ms
 	}
 
 	return 0;
 }
+
